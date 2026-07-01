@@ -1,0 +1,116 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Catálogo</span>
+      <h1>Produtos</h1>
+      <p>Visualize, filtre e simule manutenção dos itens da Platzi Fake Store API.</p>
+    </div>
+
+    <a class="button button-primary" routerLink="/produtos/novo">
+      <span aria-hidden="true">＋</span>
+      Novo produto
+    </a>
+  </header>
+
+  <div class="stats-grid">
+    <article class="metric">
+      <span>Total carregado</span>
+      <strong>{{ products().length }}</strong>
+    </article>
+    <article class="metric">
+      <span>Filtrados</span>
+      <strong>{{ filteredProducts().length }}</strong>
+    </article>
+    <article class="metric">
+      <span>Categorias</span>
+      <strong>{{ categories().length }}</strong>
+    </article>
+  </div>
+
+  <section class="filters-bar" aria-label="Filtros de produtos">
+    <label class="field compact">
+      <span>Pesquisar</span>
+      <input
+        type="search"
+        placeholder="Nome ou descrição"
+        [(ngModel)]="searchTerm"
+        name="searchTerm"
+      />
+    </label>
+
+    <label class="field compact">
+      <span>Categoria</span>
+      <select [(ngModel)]="selectedCategory" name="selectedCategory">
+        <option value="">Todas</option>
+        @for (category of categories(); track category.id) {
+          <option [value]="category.id">{{ category.name }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field compact">
+      <span>Preço mínimo</span>
+      <input type="number" min="0" placeholder="0" [(ngModel)]="minPrice" name="minPrice" />
+    </label>
+
+    <label class="field compact">
+      <span>Preço máximo</span>
+      <input type="number" min="0" placeholder="999" [(ngModel)]="maxPrice" name="maxPrice" />
+    </label>
+
+    <button class="button button-ghost" type="button" (click)="clearFilters()">Limpar</button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading-state">Carregando produtos...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+  } @else {
+    <div class="results-toolbar">
+      <strong>{{ filteredProducts().length }} produto(s) encontrado(s)</strong>
+      <span>Dados consultados em tempo real</span>
+    </div>
+
+    <div class="product-grid">
+      @for (product of filteredProducts(); track product.id) {
+        <article class="product-card">
+          <div class="product-media">
+            <img
+              [src]="productImage(product)"
+              [alt]="product.title"
+              loading="lazy"
+              (error)="handleImageError($event)"
+            />
+            <span>{{ product.category.name }}</span>
+          </div>
+
+          <div class="product-body">
+            <div>
+              <h2>{{ product.title }}</h2>
+              <p>{{ product.description }}</p>
+            </div>
+
+            <div class="product-meta">
+              <strong>{{ product.price | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+              <small>#{{ product.id }}</small>
+            </div>
+          </div>
+
+          <footer class="card-actions">
+            <a class="button button-light" [routerLink]="['/produtos', product.id, 'editar']">
+              Editar
+            </a>
+            <a class="button button-danger" [routerLink]="['/produtos', product.id, 'excluir']">
+              Excluir
+            </a>
+          </footer>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <strong>Nenhum produto encontrado</strong>
+          <span>Ajuste os filtros para ampliar a busca.</span>
+        </div>
+      }
+    </div>
+  }
+</section>

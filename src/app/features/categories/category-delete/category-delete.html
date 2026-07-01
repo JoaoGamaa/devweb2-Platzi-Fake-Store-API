@@ -1,0 +1,40 @@
+<section class="page narrow-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Exclusão simulada</span>
+      <h1>Excluir categoria</h1>
+      <p>Esta ação apenas demonstra o fluxo visual, sem apagar dados da API.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">Buscando categoria...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+  } @else if (category()) {
+    @if (successMessage()) {
+      <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+
+    <article class="delete-panel">
+      <img
+        [src]="category()?.image"
+        [alt]="category()?.name"
+        loading="lazy"
+        (error)="handleImageError($event)"
+      />
+      <div>
+        <span class="tag">#{{ category()?.id }}</span>
+        <h2>{{ category()?.name }}</h2>
+        <p>{{ category()?.slug }}</p>
+      </div>
+    </article>
+
+    <footer class="form-actions">
+      <a class="button button-light" routerLink="/categorias">Cancelar</a>
+      <button class="button button-danger" type="button" (click)="confirmDelete()">
+        Confirmar exclusão simulada
+      </button>
+    </footer>
+  }
+</section>

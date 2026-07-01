@@ -1,0 +1,36 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/produtos" aria-label="Ir para produtos">
+      <span class="brand-mark">FS</span>
+      <span>
+        <strong>Fake Store</strong>
+        <small>Platzi API</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a routerLink="/produtos" routerLinkActive="is-active">
+        <span aria-hidden="true">□</span>
+        Produtos
+      </a>
+      <a routerLink="/categorias" routerLinkActive="is-active">
+        <span aria-hidden="true">◇</span>
+        Categorias
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div>
+        <small>Sessão</small>
+        <strong>Operador autenticado</strong>
+      </div>
+      <button class="icon-button" type="button" title="Sair" aria-label="Sair" (click)="logout()">
+        ↪
+      </button>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <router-outlet />
+  </main>
+</div>

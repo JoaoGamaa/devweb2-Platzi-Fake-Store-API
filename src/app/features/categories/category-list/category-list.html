@@ -1,0 +1,81 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Organização</span>
+      <h1>Categorias</h1>
+      <p>Consulte grupos do catálogo e simule inclusão, edição ou remoção.</p>
+    </div>
+
+    <a class="button button-primary" routerLink="/categorias/nova">
+      <span aria-hidden="true">＋</span>
+      Nova categoria
+    </a>
+  </header>
+
+  <section class="filters-bar" aria-label="Filtros de categorias">
+    <label class="field compact wide">
+      <span>Pesquisar</span>
+      <input
+        type="search"
+        placeholder="Nome, slug ou identificador"
+        [(ngModel)]="searchTerm"
+        name="searchTerm"
+      />
+    </label>
+
+    <label class="field compact">
+      <span>Ordenação</span>
+      <select [(ngModel)]="sortBy" name="sortBy">
+        <option value="name">Nome</option>
+        <option value="id">Código</option>
+        <option value="products">Qtd. produtos</option>
+      </select>
+    </label>
+
+    <button class="button button-ghost" type="button" (click)="clearFilters()">Limpar</button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading-state">Carregando categorias...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+  } @else {
+    <div class="category-grid">
+      @for (category of filteredCategories(); track category.id) {
+        <article class="category-card">
+          <img
+            [src]="category.image"
+            [alt]="category.name"
+            loading="lazy"
+            (error)="handleImageError($event)"
+          />
+
+          <div class="category-content">
+            <span class="tag">#{{ category.id }}</span>
+            <h2>{{ category.name }}</h2>
+            <p>{{ category.slug }}</p>
+
+            <div class="category-count">
+              <strong>{{ productCount(category.id) }}</strong>
+              <span>produto(s)</span>
+            </div>
+          </div>
+
+          <footer class="card-actions">
+            <a class="button button-light" [routerLink]="['/categorias', category.id, 'editar']">
+              Editar
+            </a>
+            <a class="button button-danger" [routerLink]="['/categorias', category.id, 'excluir']">
+              Excluir
+            </a>
+          </footer>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <strong>Nenhuma categoria encontrada</strong>
+          <span>Ajuste os filtros para ampliar a busca.</span>
+        </div>
+      }
+    </div>
+  }
+</section>

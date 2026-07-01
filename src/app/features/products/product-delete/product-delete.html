@@ -1,0 +1,41 @@
+<section class="page narrow-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Exclusão simulada</span>
+      <h1>Excluir produto</h1>
+      <p>Esta ação apenas demonstra o fluxo visual, sem apagar dados da API.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">Buscando produto...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+  } @else if (product()) {
+    @if (successMessage()) {
+      <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+
+    <article class="delete-panel">
+      <img
+        [src]="productImage()"
+        [alt]="product()?.title"
+        loading="lazy"
+        (error)="handleImageError($event)"
+      />
+      <div>
+        <span class="tag">{{ product()?.category?.name }}</span>
+        <h2>{{ product()?.title }}</h2>
+        <p>{{ product()?.description }}</p>
+        <strong>{{ product()?.price | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+      </div>
+    </article>
+
+    <footer class="form-actions">
+      <a class="button button-light" routerLink="/produtos">Cancelar</a>
+      <button class="button button-danger" type="button" (click)="confirmDelete()">
+        Confirmar exclusão simulada
+      </button>
+    </footer>
+  }
+</section>

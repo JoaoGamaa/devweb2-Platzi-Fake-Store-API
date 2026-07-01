@@ -1,0 +1,88 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Protótipo de produto</span>
+      <h1>{{ isEdit() ? 'Editar produto' : 'Novo produto' }}</h1>
+      <p>Preencha os campos para simular a manutenção do catálogo.</p>
+    </div>
+
+    <a class="button button-light" routerLink="/produtos">Voltar</a>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">Preparando formulário...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+  } @else {
+    @if (successMessage()) {
+      <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+
+    <form class="editor-layout" [formGroup]="form" (ngSubmit)="save()">
+      <section class="form-card">
+        <div class="form-grid">
+          <label class="field">
+            <span>Nome do produto</span>
+            <input type="text" formControlName="title" placeholder="Ex.: Classic Cotton Shirt" />
+            @if (controlInvalid('title')) {
+              <small>Informe pelo menos 3 caracteres.</small>
+            }
+          </label>
+
+          <label class="field">
+            <span>Preço</span>
+            <input type="number" min="1" formControlName="price" />
+            @if (controlInvalid('price')) {
+              <small>Informe um preço maior que zero.</small>
+            }
+          </label>
+
+          <label class="field">
+            <span>Categoria</span>
+            <select formControlName="categoryId">
+              <option [ngValue]="0">Selecione</option>
+              @for (category of categories(); track category.id) {
+                <option [ngValue]="category.id">{{ category.name }}</option>
+              }
+            </select>
+            @if (controlInvalid('categoryId')) {
+              <small>Selecione uma categoria.</small>
+            }
+          </label>
+
+          <label class="field">
+            <span>Imagem</span>
+            <input type="url" formControlName="image" placeholder="https://..." />
+            @if (controlInvalid('image')) {
+              <small>Informe a URL da imagem.</small>
+            }
+          </label>
+
+          <label class="field full">
+            <span>Descrição</span>
+            <textarea rows="6" formControlName="description"></textarea>
+            @if (controlInvalid('description')) {
+              <small>Descreva o produto com mais detalhes.</small>
+            }
+          </label>
+        </div>
+
+        <footer class="form-actions">
+          <a class="button button-ghost" routerLink="/produtos">Cancelar</a>
+          <button class="button button-primary" type="submit">Salvar simulação</button>
+        </footer>
+      </section>
+
+      <aside class="preview-card">
+        <span class="eyebrow">Prévia</span>
+        <img [src]="imagePreview()" alt="Prévia do produto" (error)="handleImageError($event)" />
+        <h2>{{ form.controls.title.value || 'Produto sem nome' }}</h2>
+        <p>{{ form.controls.description.value || 'A descrição aparecerá aqui.' }}</p>
+        <div class="product-meta">
+          <strong>{{ form.controls.price.value | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+          <small>{{ selectedCategoryName() }}</small>
+        </div>
+      </aside>
+    </form>
+  }
+</section>

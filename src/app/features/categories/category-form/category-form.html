@@ -1,0 +1,55 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Protótipo de categoria</span>
+      <h1>{{ isEdit() ? 'Editar categoria' : 'Nova categoria' }}</h1>
+      <p>Simule a organização dos grupos que estruturam o catálogo.</p>
+    </div>
+
+    <a class="button button-light" routerLink="/categorias">Voltar</a>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">Preparando formulário...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-error">{{ errorMessage() }}</div>
+  } @else {
+    @if (successMessage()) {
+      <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+
+    <form class="editor-layout" [formGroup]="form" (ngSubmit)="save()">
+      <section class="form-card">
+        <div class="form-grid single-column">
+          <label class="field">
+            <span>Nome da categoria</span>
+            <input type="text" formControlName="name" placeholder="Ex.: Accessories" />
+            @if (controlInvalid('name')) {
+              <small>Informe pelo menos 3 caracteres.</small>
+            }
+          </label>
+
+          <label class="field">
+            <span>Imagem</span>
+            <input type="url" formControlName="image" placeholder="https://..." />
+            @if (controlInvalid('image')) {
+              <small>Informe a URL da imagem.</small>
+            }
+          </label>
+        </div>
+
+        <footer class="form-actions">
+          <a class="button button-ghost" routerLink="/categorias">Cancelar</a>
+          <button class="button button-primary" type="submit">Salvar simulação</button>
+        </footer>
+      </section>
+
+      <aside class="preview-card">
+        <span class="eyebrow">Prévia</span>
+        <img [src]="imagePreview()" alt="Prévia da categoria" (error)="handleImageError($event)" />
+        <h2>{{ form.controls.name.value || 'Categoria sem nome' }}</h2>
+        <p>{{ slugPreview() }}</p>
+      </aside>
+    </form>
+  }
+</section>
